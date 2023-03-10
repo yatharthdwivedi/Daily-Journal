@@ -11,7 +11,7 @@ dotenv.config()
 mongoose.connect(process.env.MONGO, {useUnifiedTopology: true, useNewUrlParser: true})
 
 const homeStartingContent = "This is Daily Journals Project. You can write about your daily journals";
-const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
+const aboutContent = "This is Daily Journals Project made by Express, EJS and MONGO DB";
 const contactContent = "You can contact me on this email =>";
 
 const app = express();
@@ -23,8 +23,15 @@ const postSchema = new mongoose.Schema({
   content: String
 });
 
+const contactSchema = new mongoose.Schema({
+  email: String,
+  mess: String
+});
+
 const Post  = mongoose.model("Post", postSchema);
- 
+
+const Contact = mongoose.model("Contact", contactSchema);
+
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -57,6 +64,19 @@ app.get("/contact", function(req,res) {
   
     res.render("contact", {con: contactContent})
   
+})
+
+app.post("/contact", function(req,res) {
+
+  const contact = new Contact({
+    email : req.body.email,
+    mess : req.body.message
+  })
+
+  contact.save().then(()=> {
+    res.redirect("/")
+  })
+
 })
 
 app.get("/compose", function(req, res) {
